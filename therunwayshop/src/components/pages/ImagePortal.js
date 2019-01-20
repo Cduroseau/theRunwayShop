@@ -54,6 +54,20 @@ import { render } from 'react-dom';
                 </CloudinaryContext>
                 <div className="clearfix"></div>
             </div>
+            <p>Images are render from cloudinary - Eample Below</p>
+            <img src="indigital.png" alt="example" height="100%" width="100%"></img>
+
+            <p>Each time you click on a image you go deeper into the folder until you get to the designer</p>
+            <img src="indigital2.png" alt="example" height="100%" width="100%"></img>
+
+            <img src="indigital3.png" alt="example" height="100%" width="100%"></img>
+
+            <img src="indigital4.png" alt="example" height="100%" width="100%"></img>
+
+            <img src="indigital5.png" alt="example" height="100%" width="100%"></img>
+
+
+            
         </div>
 
     );
