@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withAuth } from '@okta/okta-react';
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
@@ -9,7 +9,8 @@ class Photographer extends Component {
   state = {
     currentUserName: '',
     currentUserEmail: '',
-    authenticated: null 
+    authenticated: null,
+    files: []
   };
 
   handleDrop = (acceptedFiles, rejectedFiles) => {
@@ -19,7 +20,7 @@ class Photographer extends Component {
       // Initial FormData
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("tags", `codeinfuse, medium, gist`);
+      formData.append("tags", `codeinfuse, medium, gist, xmas`);
       formData.append("upload_preset", "dhaolytme"); // Cloud name
       formData.append("api_key", "721197728675577"); // API key for Cloudinary
       formData.append("timestamp", (Date.now() / 1000) | 0);
@@ -38,6 +39,10 @@ class Photographer extends Component {
     axios.all(uploaders).then((result) => {
       // ... perform after upload is successful operation
       console.log("results", result)
+    });
+
+    this.setState({
+      files: this.state.files.concat(acceptedFiles),
     });
   }
 
@@ -77,6 +82,12 @@ class Photographer extends Component {
 
 
   render() {
+    const previewStyle = {
+      display: 'inline',
+      width: 100,
+      height: 100,
+    };
+
     if (this.state.authenticated === null) return null;
 
       const mainContent = this.state.authenticated ? (
@@ -107,30 +118,45 @@ class Photographer extends Component {
         <h1>Welcome {currentUserName}</h1>
         <p>Email: {currentUserEmail}</p>
         <p>You have reached the authorized photographer area of the portal</p>
+        
+
         <Dropzone 
           onDrop={this.handleDrop} 
           // multiple 
-          // accept="image/*"
+          accept="image/*"
           // className={style.dropppp}
           
         >
-        {
-          ({getRootProps, getInputProps, isDragActive}) => {
-            return (
-              <div {...getRootProps()}
-               className="dropzone dropzone--isActive">
-                
-                <input {...getInputProps()} />
-                {
-                  isDragActive ? 
-                  <p>Drop files here...</p> :
-                  <p>Try dropping some files here...</p>
-                }
-              </div>
-            )
+          {
+            ({getRootProps, getInputProps, isDragActive}) => {
+              return (
+                <div {...getRootProps()}
+                className="dropzone dropzone--isActive">
+                  
+                  <input {...getInputProps()} />
+                  {
+                    isDragActive ? 
+                    <p>Drop files here...</p> :
+                    <p>Try dropping some files here...</p>
+                  }
+                </div>
+              )
+            }
           }
-        }
-</Dropzone>
+          </Dropzone>
+          {this.state.files.length > 0 &&
+            <Fragment>
+              <h3>Previews</h3>
+              {this.state.files.map((file) => (
+                <img
+                  alt="Preview"
+                  key={file.preview}
+                  src={file.preview}
+                  style={previewStyle}
+                />
+              ))}
+            </Fragment>
+          }
 
         {mainContent} 
       </div>
