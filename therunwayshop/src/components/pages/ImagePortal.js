@@ -33,7 +33,8 @@ class ImagePortal extends Component {
                         this.state.gallery.map(data => {
                             return (
                                 <div className="col p-0 mb-3 gallary-item" key={data.public_id}>
-                                    <a target="_blank" href={`https://api.cloudinary.com/v1_1/${appConfig.CLOUDINARY.cloud_name}/image/sprite${data.public_id}.jpg`}>
+                                    {/* <a target="_blank" href={`https://api.cloudinary.com/v1_1/${appConfig.CLOUDINARY.cloud_name}/image/sprite${data.public_id}.jpg`}> */}
+                                    <a target="_blank" href={`https://res.cloudinary.com/${appConfig.CLOUDINARY.cloud_name}/image/upload/v${data.version}/${data.public_id}`}>
                                         <Image publicId={data.public_id}>
                                             <Transformation
                                                 crop="scale"
