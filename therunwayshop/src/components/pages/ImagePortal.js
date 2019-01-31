@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { CloudinaryContext, Transformation, Image } from 'cloudinary-react';
 import { render } from 'react-dom';
+import appConfig from '../../config/app';
 
-
-  class ImagePortal extends Component {
+class ImagePortal extends Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -13,7 +13,7 @@ import { render } from 'react-dom';
   }
   componentDidMount() {
       // Request for images tagged xmas       
-      axios.get('https://res.cloudinary.com/christekh/image/list/xmas.json')
+      axios.get('https://res.cloudinary.com/' + appConfig.CLOUDINARY.cloud_name + '/image/list/xmas.json')
           .then(res => {
               console.log(res.data);
               this.setState({gallery: res.data.resources});
@@ -28,12 +28,12 @@ import { render } from 'react-dom';
         <div className="main">
             <h1>Image Portal</h1>
             <div className="gallery">
-                <CloudinaryContext cloudName="christekh" className="row">
+                <CloudinaryContext cloudName={appConfig.CLOUDINARY.cloud_name} className="row">
                     {
                         this.state.gallery.map(data => {
                             return (
                                 <div className="col p-0 mb-3 gallary-item" key={data.public_id}>
-                                    <a target="_blank" href={`https://api.cloudinary.com/v1_1/dhaolytme/image/sprite${data.public_id}.jpg`}>
+                                    <a target="_blank" href={`https://api.cloudinary.com/v1_1/${appConfig.CLOUDINARY.cloud_name}/image/sprite${data.public_id}.jpg`}>
                                         <Image publicId={data.public_id}>
                                             <Transformation
                                                 crop="scale"

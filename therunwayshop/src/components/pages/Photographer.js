@@ -1,49 +1,29 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { withAuth } from '@okta/okta-react';
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
-
+import Cloudinary from './cloudinary'
+import appConfig from '../../config/app'
 
 export default withAuth(
 class Photographer extends Component {
   state = {
     currentUserName: '',
     currentUserEmail: '',
-    authenticated: null,
-    files: []
+    authenticated: null
   };
 
-  handleDrop = (acceptedFiles, rejectedFiles) => {
+  handleDrop = async (acceptedFiles, rejectedFiles) => {
     // Push all the axios request promise into a single array
     console.log("DROP IS EXECUTED")
-    const uploaders = acceptedFiles.map(file => {
-      // Initial FormData
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("tags", `codeinfuse, medium, gist, xmas`);
-      formData.append("upload_preset", "dhaolytme"); // Cloud name
-      formData.append("api_key", "721197728675577"); // API key for Cloudinary
-      formData.append("timestamp", (Date.now() / 1000) | 0);
-      
-      // AJAX upload request using Axios (Cloudinary URL)
-      return axios.post("https://api.cloudinary.com/v1_1/dhaolytme/image/upload", formData, {
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      }).then(response => {
-        const data = response.data;
-        const fileURL = data.secure_url // You should store this URL for future references in your app
-        console.log(data);
-      })
-    });
-  
-    // Once all the files are uploaded 
-    axios.all(uploaders).then((result) => {
-      // ... perform after upload is successful operation
-      console.log("results", result)
-    });
-
-    this.setState({
-      files: this.state.files.concat(acceptedFiles),
-    });
+    const file = acceptedFiles.find(f => f)
+    const cloudinary = new Cloudinary(appConfig.CLOUDINARY)
+    const res = await cloudinary.upload(file, 'Menswear/Year/City/Designer', 'xmas')
+    if (res.ok) {
+      alert("success")
+    } else {
+      console.log('Error', 'Something went wrong with image uploading...')
+    }
   }
 
   componentDidMount() {
@@ -61,11 +41,7 @@ class Photographer extends Component {
       this.setState({ authenticated });
     }
   };
-
-  // async componentDidMount() {
-  //   this.checkAuthentication();
-  // }
-
+  
   async componentDidUpdate() {
     this.checkAuthentication();
   }
@@ -117,12 +93,10 @@ class Photographer extends Component {
       <div>
         <h1>Welcome {currentUserName}</h1>
         <p>Email: {currentUserEmail}</p>
-        <p>You have reached the authorized photographer area of the portal</p>
-        
 
         <Dropzone 
           onDrop={this.handleDrop} 
-          // multiple 
+          multiple={false}
           accept="image/*"
           // className={style.dropppp}
           
@@ -144,20 +118,7 @@ class Photographer extends Component {
             }
           }
           </Dropzone>
-          {this.state.files.length > 0 &&
-            <Fragment>
-              <h3>Previews</h3>
-              {this.state.files.map((file) => (
-                <img
-                  alt="Preview"
-                  key={file.preview}
-                  src={file.preview}
-                  style={previewStyle}
-                />
-              ))}
-            </Fragment>
-          }
-
+          
         {mainContent} 
       </div>
     );
