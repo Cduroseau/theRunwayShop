@@ -10,12 +10,18 @@
     "cloudinary-react": "^1.1.0",
     "crypto-js": "^3.1.9-1",
     "dropzone": "^5.5.1",
+    "gsap": "^2.0.2",
     "ramda": "^0.26.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-dropzone": "^8.0.3",
+    "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.3"
+    "react-scripts": "2.1.3",
+    "redux": "^4.0.1",
+    "redux-persist": "^5.10.0",
+    "redux-promise-middleware": "^5.1.1",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { CloudinaryContext, Transformation, Image } from 'cloudinary-react';
 import { render } from 'react-dom';
 import appConfig from '../../config/app';
+import { connect } from 'react-redux';
 
 class ImagePortal extends Component {
     constructor(props) {
@@ -12,20 +13,32 @@ class ImagePortal extends Component {
       }
   }
   componentDidMount() {
-      // Request for images tagged xmas       
+      console.log(this.state)
+      // Request for images tagged xmas
       axios.get('https://res.cloudinary.com/' + appConfig.CLOUDINARY.cloud_name + '/image/list/xmas.json')
-          .then(res => {
-              console.log(res.data);
-              this.setState({gallery: res.data.resources});
-          }).catch(err => {
-              console.log(err)
-          });
+        .then(res => {
+            console.log(res.data);
+            this.setState({gallery: res.data.resources});
+        }).catch(err => {
+            console.log(err)
+        });
+    
+    // axios.get('https://api.cloudinary.com/v1_1/' + appConfig.CLOUDINARY.cloud_name + '/folders', {
+    //     headers: {'Authorization': 'foobar'}
+    // }).then(res => {
+    //     console.log(res.data);
+    //     this.setState({gallery: res.data.resources});
+    // }).catch(err => {
+    //     console.log(err)
+    // });
+        
   }
   uploadWidget() {
     // . . .
   }
 
     render() {
+        console.log(this.props.token)
       return (
         <div className="main">
             <h1>Image Portal</h1>
@@ -76,4 +89,7 @@ class ImagePortal extends Component {
   }
 }
 
-export default ImagePortal
+const mapStateToProps = state => ({
+    token: state.auth.access_token
+});
+export default connect(mapStateToProps, null)(ImagePortal);

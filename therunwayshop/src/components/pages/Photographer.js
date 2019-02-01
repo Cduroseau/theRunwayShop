@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { withAuth } from '@okta/okta-react';
 import Dropzone from 'react-dropzone'
-import axios from 'axios'
 import Cloudinary from './cloudinary'
 import appConfig from '../../config/app'
+import { connect } from 'react-redux';
+import { setAccessToken } from '../../state/actions/auth'
 
-export default withAuth(
-class Photographer extends Component {
+export class Photographer extends Component {
   state = {
     currentUserName: '',
     currentUserEmail: '',
@@ -40,6 +40,11 @@ class Photographer extends Component {
     if (authenticated !== this.state.authenticated) {
       this.setState({ authenticated });
     }
+    // console.log('===========')
+    // console.log(await this.props.auth)
+    // console.log(await this.props.auth.getUser())
+    // console.log('===========', await this.props.auth.getAccessToken())
+    this.props.setAccessToken(await this.props.auth.getAccessToken());
   };
   
   async componentDidUpdate() {
@@ -47,12 +52,10 @@ class Photographer extends Component {
   }
 
   login = async () => {
-    // this.props.auth.login('/');
     this.props.auth.login('/ImagePortal');
   };
 
   logout = async () => {
-    // this.props.auth.logout('/');
     this.props.auth.logout('/ImagePortal');
   };
 
@@ -124,7 +127,13 @@ class Photographer extends Component {
     );
   }
 }
-)
+
+const mapStateToProps = state => ({});
+const mapStateToDispatch = dispatch => ({
+  setAccessToken: (token) => dispatch(setAccessToken(token))
+})
+
+export default connect(mapStateToProps, mapStateToDispatch)(withAuth(Photographer));
 
 
 // export default Staff;
