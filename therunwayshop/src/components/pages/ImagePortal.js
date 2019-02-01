@@ -17,6 +17,8 @@ class ImagePortal extends Component {
           .then(res => {
               console.log(res.data);
               this.setState({gallery: res.data.resources});
+          }).catch(err => {
+              console.log(err)
           });
   }
   uploadWidget() {
@@ -27,6 +29,7 @@ class ImagePortal extends Component {
       return (
         <div className="main">
             <h1>Image Portal</h1>
+
             <div className="gallery">
                 <CloudinaryContext cloudName={appConfig.CLOUDINARY.cloud_name} className="row">
                     {
