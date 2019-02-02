@@ -1,0 +1,21 @@
+.cardCont
+{
+  width:250px;
+  height:400px;
+  float:left;
+  margin-right:10px;
+  position:relative;
+  /*border:solid 2px #fff;*/
+}
+.cardFront, .cardBack
+{
+  position:absolute;
+  width:250px;
+  height:400px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  
+}

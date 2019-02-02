@@ -1,41 +1,17 @@
 {
   "name": "therunwayshop",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@okta/okta-react": "^1.1.4",
-    "@okta/okta-signin-widget": "^2.14.0",
-    "axios": "^0.18.0",
-    "bootstrap": "^4.2.1",
-    "cloudinary-react": "^1.1.0",
-    "crypto-js": "^3.1.9-1",
-    "dropzone": "^5.5.1",
-    "gsap": "^2.0.2",
-    "ramda": "^0.26.1",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-dropzone": "^8.0.3",
-    "react-redux": "^6.0.0",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.3",
-    "redux": "^4.0.1",
-    "redux-persist": "^5.10.0",
-    "redux-promise-middleware": "^5.1.1",
-    "redux-thunk": "^2.3.0"
-  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mysql2": "^1.6.4",
+    "sequelize": "^4.42.0"
+  }
 }
