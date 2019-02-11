@@ -4,6 +4,7 @@ import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import "./NewImage.css";
 import { API } from "aws-amplify";
+import { s3Upload } from "../libs/awsLib";
 
 export default class NewImage extends Component {
   constructor(props) {
@@ -42,7 +43,12 @@ export default class NewImage extends Component {
     this.setState({ isLoading: true });
   
     try {
+      const attachment = this.file
+        ? await s3Upload(this.file)
+        : null;
+  
       await this.createImage({
+        attachment,
         content: this.state.content
       });
       this.props.history.push("/ImagePortal");

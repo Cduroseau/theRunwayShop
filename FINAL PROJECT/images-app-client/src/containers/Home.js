@@ -1,39 +1,60 @@
-import React, { Component } from "react";
+import React from 'react'
 import Card from '../components/flipCard'
+import Axios from 'axios';
 
-export default class Home extends Component {
+
+class Home extends React.Component {
+
   state={
     CardList: [
       {
-        frontImageURL: "https://s.cdpn.io/33073/lorempixe1l.jpg",
-        backImageURL: "http://unlimitedpotentialnow.com/wp-content/uploads/2012/01/Bouquet-cs.jpg"
+        frontImageURL: "frontImg",
+        backImageURL: "backImg"
       },
       {
-        frontImageURL: "https://s.cdpn.io/33073/lorempixe1l.jpg",
-        backImageURL: "http://unlimitedpotentialnow.com/wp-content/uploads/2012/01/Bouquet-cs.jpg"
+        frontImageURL: "frontImg",
+        backImageURL: "backImg"
       },
       {
-        frontImageURL: "https://s.cdpn.io/33073/lorempixe1l.jpg",
-        backImageURL: "http://unlimitedpotentialnow.com/wp-content/uploads/2012/01/Bouquet-cs.jpg"
+        frontImageURL: "frontImg",
+        backImageURL: "backImg"
       },
       {
-        frontImageURL: "https://s.cdpn.io/33073/lorempixe1l.jpg",
-        backImageURL: "http://unlimitedpotentialnow.com/wp-content/uploads/2012/01/Bouquet-cs.jpg"
+        frontImageURL: "frontImg",
+        backImageURL: "backImg"
+      },
+      {
+        frontImageURL: "frontImg",
+        backImageURL: "backImg"
+      },
+      {
+        frontImageURL: "frontImg",
+        backImageURL: "backImg"
+      },
+      {
+        frontImageURL: "frontImg",
+        backImageURL: "backImg"
+      },
+      {
+        frontImageURL: "frontImg",
+        backImageURL: "backImg"
       },
 
     ]
   }
 
   componentDidMount() {
-    //do axios call to DB and get all card images.
-    //in callback set this to the cardList array
+    Axios.get('https://api.cloudinary.com/v1_1/dhaolytme/image/sprite')
+      .then(res => {
+        this.setState({ CardList: res.data })
+      })
   }
 
   render() {
 
     return (
 
-      <div>
+      <div className="container">
         <div id="mainWrap">
         {
           this.state.CardList.map((item, key) => {
@@ -51,3 +72,5 @@ export default class Home extends Component {
   }
 
 }
+
+export default Home
