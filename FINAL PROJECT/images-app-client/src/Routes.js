@@ -13,7 +13,7 @@ import Signup from "./containers/Signup";
 export default ({ childProps }) =>
   <Switch>
     <AppliedRoute path="/" exact component={Home} props={childProps} />
-    <Route path="/ImagePortal" exact={true}component={ImagePortal} />
+    <AppliedRoute path="/ImagePortal" exact={true} component={ImagePortal} props={childProps}/>
     <AppliedRoute path="/login" exact component={Login} props={childProps} />
     <AppliedRoute path="/Dashboard" exact component={Dashboard} props={childProps} />
     <AppliedRoute path="/signup" exact component={Signup} props={childProps} />

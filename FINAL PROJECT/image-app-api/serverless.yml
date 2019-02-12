@@ -79,7 +79,7 @@ functions:
     handler: update.main
     events:
       - http:
-          path: iamges/{id}
+          path: images/{id}
           method: put
           cors: true
           authorizer: aws_iam

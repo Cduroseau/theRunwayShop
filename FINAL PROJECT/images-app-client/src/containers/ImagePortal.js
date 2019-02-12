@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { PageHeader, ListGroup } from "react-bootstrap";
+import { API } from "aws-amplify";
 import "./ImagePortal.css";
 
 export default class Home extends Component {
@@ -12,8 +13,27 @@ export default class Home extends Component {
     };
   }
 
+  async componentDidMount() {
+    if (!this.props.isAuthenticated) {
+      return;
+    }
+
+    try {
+      const notes = await this.notes();
+      this.setState({ notes });
+    } catch (e) {
+      alert(e);
+    }
+
+    this.setState({ isLoading: false });
+  }
+
+  notes() {
+    return API.get("images", "/images");
+  }
+
   renderNotesList(Images) {
-    return null;
+    return <p>{JSON.stringify(Images)}</p>;
   }
 
   renderLander() {
