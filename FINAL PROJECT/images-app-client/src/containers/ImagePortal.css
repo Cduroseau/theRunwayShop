@@ -11,3 +11,7 @@
   .ImagePortal .lander p {
     color: #999;
   }
+
+  .ImagePortal .image-list-view {
+    display: flex;
+  }
