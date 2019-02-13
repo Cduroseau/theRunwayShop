@@ -36,9 +36,9 @@ class Card extends Component {
 
     render() {
         return (
-        <div ref={c => this.element = c} class="cardCont" onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
-            <div class="cardBack" ref={d => this.frontCard = d} style={{background:`url(${this.props.backImg})`}}></div>
-            <div class="cardFront" ref={thing => this.backCard = thing} style={{background:`url(${this.props.frontImg})`}}></div>
+        <div ref={c => this.element = c} className="cardCont" onMouseEnter={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
+            <div className="cardBack" ref={d => this.frontCard = d} style={{background:`url(${this.props.backImg})`}}></div>
+            <div className="cardFront" ref={thing => this.backCard = thing} style={{background:`url(${this.props.frontImg})`}}></div>
           </div>
         )
     }

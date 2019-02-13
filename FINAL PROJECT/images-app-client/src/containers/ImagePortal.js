@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { PageHeader, ListGroup } from "react-bootstrap";
+import { API } from "aws-amplify";
 import "./ImagePortal.css";
+import { s3Download } from "../libs/awsLib";
+import ImageCard from '../components/ImageCard';
 
 export default class Home extends Component {
   constructor(props) {
@@ -12,8 +15,35 @@ export default class Home extends Component {
     };
   }
 
-  renderNotesList(Images) {
-    return null;
+  async componentDidMount() {
+    if (!this.props.isAuthenticated) {
+      return;
+    }
+
+    try {
+      const images = await this.images();
+      this.setState({ images });
+    } catch (e) {
+      alert(e);
+    }
+
+    this.setState({ isLoading: false });
+  }
+
+  images() {
+    return API.get("images", "/images");
+  }
+
+  renderNotesList = (images) => {
+    return images.map((image) => {
+      return (
+        <div key={image.imageId}>
+          <ImageCard fileName={image.attachment} />
+          <center>{image.content}</center>
+        </div>
+      )
+    })
+    
   }
 
   renderLander() {
@@ -29,8 +59,8 @@ export default class Home extends Component {
     return (
       <div className="images">
         <PageHeader>Image Portal</PageHeader>
-        <ListGroup>
-          {!this.state.isLoading && this.renderNotesList(this.state.notes)}
+        <ListGroup className="image-list-view">
+          {!this.state.isLoading && this.renderNotesList(this.state.images)}
         </ListGroup>
       </div>
     );
@@ -39,7 +69,8 @@ export default class Home extends Component {
   render() {
     return (
       <div className="ImagePortal">
-        {this.props.isAuthenticated ? this.renderNotes() : this.renderLander()}
+        {
+          this.props.isAuthenticated ? this.renderNotes() : this.renderLander()}
       </div>
     );
   }

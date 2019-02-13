@@ -3,16 +3,16 @@ export default {
 
     s3: {
       REGION: "us-east-2",
-      BUCKET: "YOUR_S3_UPLOADS_BUCKET_NAME"
+      BUCKET: "images-app-uploads"
     },
     apiGateway: {
       REGION: "us-east-2",
-      URL: "YOUR_API_GATEWAY_URL"
+      URL: "https://6ykck904q9.execute-api.us-east-2.amazonaws.com/prod"
     },
     cognito: {
       REGION: "us-east-2",
-      USER_POOL_ID: "us-east-2_Tz4i44AcI",
-      APP_CLIENT_ID: "180tih9jfs8knp6pmjt1g6g0oq",
-      IDENTITY_POOL_ID: "us-east-2:9ff5dd3a-c602-4d38-a39a-52254a767e38"
+      USER_POOL_ID: "us-east-2_9ACMAVoGN",
+      APP_CLIENT_ID: "76seo2s9vm44vcabcal64ck4hb",
+      IDENTITY_POOL_ID: "us-east-2:59931c3d-eb85-4bcb-87d0-8b7ec5b25f22"
     }
   };
