@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Storage } from "aws-amplify";
 import './image.css'
-import { s3Download } from "../../libs/awsLib";
 
 class ImageCard extends Component {
 
@@ -14,7 +13,7 @@ class ImageCard extends Component {
     }
 
     componentDidMount() {      
-      Storage.vault.get(this.props.fileName)
+      Storage.get(this.props.fileName)
       .then((url) => {
         this.setState({imageURL: url})
       }) 
@@ -26,7 +25,7 @@ class ImageCard extends Component {
         return <div className="emptyImage" />
       }
       return (
-        <img className="imageCard" src={this.state.imageURL} />
+        <img className="imageCard" alt="card" src={this.state.imageURL} />
       )
     }
 }

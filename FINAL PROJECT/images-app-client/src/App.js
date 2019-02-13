@@ -64,7 +64,13 @@ class App extends Component {
                 <NavItem>Image Portal</NavItem>
               </LinkContainer>
               {this.state.isAuthenticated
-                ? <NavItem onClick={this.handleLogout}>Logout</NavItem>
+                ? 
+                <Fragment>
+                  <LinkContainer to="/dashboard">
+                    <NavItem>Dashboard</NavItem>
+                  </LinkContainer>
+                  <NavItem onClick={this.handleLogout}>Logout</NavItem>
+                </Fragment>
                 : <Fragment>
                     <LinkContainer to="/signup">
                       <NavItem>Signup</NavItem>
