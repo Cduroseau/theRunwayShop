@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { PageHeader, ListGroup } from "react-bootstrap";
 import { API } from "aws-amplify";
 import "./ImagePortal.css";
-import { s3Download } from "../libs/awsLib";
 import ImageCard from '../components/ImageCard';
 
 export default class Home extends Component {
@@ -16,10 +15,6 @@ export default class Home extends Component {
   }
 
   async componentDidMount() {
-    if (!this.props.isAuthenticated) {
-      return;
-    }
-
     try {
       const images = await this.images();
       this.setState({ images });
@@ -69,8 +64,7 @@ export default class Home extends Component {
   render() {
     return (
       <div className="ImagePortal">
-        {
-          this.props.isAuthenticated ? this.renderNotes() : this.renderLander()}
+        {this.renderNotes()}
       </div>
     );
   }

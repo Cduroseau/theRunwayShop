@@ -18,6 +18,12 @@ export default class Dashboard extends Component {
     };
   }
 
+  componentDidMount() {
+    if (!this.props.isAuthenticated) {
+      this.props.history.push("/");
+    }
+  }
+
   validateForm() {
     return this.state.content.length > 0;
   }
