@@ -17,6 +17,9 @@ export default class Home extends Component {
   async componentDidMount() {
     try {
       const images = await this.images();
+      images.sort(function(a, b) {
+        return parseFloat(b.createdAt) - parseFloat(a.createdAt);
+      });
       this.setState({ images });
     } catch (e) {
       alert(e);
