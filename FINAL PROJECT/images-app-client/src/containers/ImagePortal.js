@@ -4,7 +4,7 @@ import { API } from "aws-amplify";
 import "./ImagePortal.css";
 import ImageCard from '../components/ImageCard';
 
-export default class Home extends Component {
+export default class ImagePortal extends Component {
   constructor(props) {
     super(props);
 
@@ -32,7 +32,7 @@ export default class Home extends Component {
     return API.get("images", "/images");
   }
 
-  renderNotesList = (images) => {
+  renderimagesList = (images) => {
     return images.map((image) => {
       return (
         <div key={image.imageId}>
@@ -44,21 +44,13 @@ export default class Home extends Component {
     
   }
 
-  renderLander() {
-    return (
-      <div className="lander">
-        <h1>Scratch</h1>
-        <p>A simple note taking app</p>
-      </div>
-    );
-  }
 
-  renderNotes() {
+  renderimages() {
     return (
       <div className="images">
         <PageHeader>Image Portal</PageHeader>
         <ListGroup className="image-list-view">
-          {!this.state.isLoading && this.renderNotesList(this.state.images)}
+          {!this.state.isLoading && this.renderimagesList(this.state.images)}
         </ListGroup>
       </div>
     );
@@ -67,7 +59,7 @@ export default class Home extends Component {
   render() {
     return (
       <div className="ImagePortal">
-        {this.renderNotes()}
+        {this.renderimages()}
       </div>
     );
   }
