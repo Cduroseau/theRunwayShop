@@ -59,32 +59,37 @@ export default class DraggableUploader extends React.Component {
   }
 
   onFileLoad(e) {
-    const initFile = e.currentTarget.files[0];
-
+    const initFile = e.currentTarget.files;
     console.log("file uploaded looks like: ", initFile);
-
-    let fileReader = new FileReader();
-    fileReader.onload = () => {
-      console.log("IMAGE LOADED: ");
-      const file = {
-        file: initFile,
-        data: fileReader.result,
-        isUploading: false
+    Object.keys(initFile).map((key) => {
+      const file = initFile[key];
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        console.log("IMAGE LOADED: ");
+        const fileData = {
+          file: file,
+          data: fileReader.result,
+          isUploading: false
+        }
+        //Add file
+        this.addLoadedFile(fileData);
       }
-      //Add file
-      this.addLoadedFile(file);
-    }
 
-    fileReader.onabort = () => {
-      alert("Reading Aborted");
-    }
+      fileReader.onabort = () => {
+        alert("Reading Aborted");
+      }
 
-    fileReader.onerror = () => {
-      alert("Reading ERROR!");
-    }
-    if(initFile){
-        fileReader.readAsDataURL(initFile);
-    }
+      fileReader.onerror = () => {
+        alert("Reading ERROR!");
+      }
+      if(initFile){
+          fileReader.readAsDataURL(file);
+      }
+    })
+
+    
+
+    
     // fileReader.readAsDataURL(file);
   }
 
@@ -165,6 +170,7 @@ export default class DraggableUploader extends React.Component {
         <div className="draggable-container">
           <input
             type="file"
+            multiple
             id="file-browser-input"
             name="file-browser-input"
             ref={input => this.fileInput = input}

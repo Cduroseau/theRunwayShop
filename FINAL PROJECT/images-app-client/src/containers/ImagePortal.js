@@ -37,7 +37,7 @@ export default class ImagePortal extends Component {
       return (
         <div key={image.imageId}>
           <ImageCard fileName={image.attachment} />
-          <center>{image.content}</center>
+          <center className="content">{image.content !== undefined ? image.content : 'No content'}</center>
         </div>
       )
     })
