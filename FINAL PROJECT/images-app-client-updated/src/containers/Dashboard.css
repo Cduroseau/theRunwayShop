@@ -1,0 +1,9 @@
+.Dashboard form {
+  padding-bottom: 15px;
+}
+
+.Dashboard form textarea {
+  height: 200px;
+  width: 200px;
+  font-size: 24px;
+}

@@ -1,0 +1,19 @@
+.imageCard
+{
+  width:250px;
+  height:400px;
+  float:left;
+  position:relative;
+  object-fit: cover;
+  border: 1px solid gray;
+  opacity: 0.8;
+  /*border:solid 2px #fff;*/
+}
+
+.emptyImage {
+  width:250px;
+  height:400px;
+  border: 1px solid gray;
+  margin-right:10px;
+  margin-bottom:10px;
+}

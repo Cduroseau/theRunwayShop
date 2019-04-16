@@ -1,0 +1,23 @@
+@media all and (min-width: 480px) {
+    .Login {
+      padding: 60px 0;
+    }
+  
+    .Login form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }
+
+  .Login {
+    position: absolute;
+    top: 25%;
+    left: 35%;
+    overflow: hidden;
+    width: 30%;
+    height: 60%;
+    color: #212121;
+    background-color: #fff;
+    backface-visibility: hidden;
+    box-shadow: 0 10px 35px rgba(50,50,93,.1),0 2px 15px rgba(0,0,0,.07);
+   }
