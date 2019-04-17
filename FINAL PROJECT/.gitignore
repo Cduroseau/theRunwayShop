@@ -52,4 +52,4 @@ env.yml
 
 # Jetbrains IDEs
 .idea
-
+.DS_Store
