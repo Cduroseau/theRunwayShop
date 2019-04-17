@@ -24,12 +24,12 @@ const photos = [
   }
 ];
 
-
 const options1 = [
   { value: 'Menswear', label: 'Menswear' },
   { value: 'Womenswear', label: 'Womenswear' },
   { value: 'Streetwear', label: 'Streetwear' },
-  { value: 'Resort&Cruise, Bridal', label: 'Resort&Cruise,Bridal' },
+  { value: 'Resort&Cruise', label: 'Resort&Cruise' },
+  { value: 'Bridal', label: 'Bridal' },
   { value: 'Emerging Designers ', label: 'Emerging Designers ' }
 ];
 
@@ -88,8 +88,8 @@ export default class DraggableUploader extends React.Component {
 
   handleClick = () => {
     this.setState({ lightboxIsOpen: true });
-  }; 
-  
+  };
+
   componentWillMount() {
     this.validator = new SimpleReactValidator();
   }
@@ -148,7 +148,7 @@ export default class DraggableUploader extends React.Component {
     var attachment = this.state.attachment;
     attachment.splice(file, 1);
     this.setState({ attachment })
-}
+  }
 
   publish = (e) => {
     e.preventDefault()
@@ -164,6 +164,7 @@ export default class DraggableUploader extends React.Component {
       userId: userId,
       content: content
     }
+    console.log("data awww", body);
     this.setState({ show: true })
     axios({
       method: 'POST',
@@ -195,7 +196,7 @@ export default class DraggableUploader extends React.Component {
           visible: false,
           isAdded2: false,
         })
-    
+
       }
       ).catch(function (error) {
         console.log(error);
@@ -206,7 +207,7 @@ export default class DraggableUploader extends React.Component {
 
   Submit = (e) => {
     e.preventDefault()
-         if (this.validator.allValid()) {
+    if (this.validator.allValid()) {
       this.setState({ isAdded1: true, isLoading1: true, isAdded: false });
       this.state.content = Math.random().toString();
       let { attachment, season, designer, category, city, userId, content } = this.state;
@@ -226,7 +227,7 @@ export default class DraggableUploader extends React.Component {
       this.validator.showMessages();
       this.forceUpdate();
     }
-}
+  }
   makeid(length) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -249,12 +250,20 @@ export default class DraggableUploader extends React.Component {
       } else {
         try {
           const attachment = item
-            ? await s3Upload(item.file).then((item) => {            
+            ? await s3Upload(item.file).then((item) => {
               data.imageId = this.makeid(10);
               data.attachment = item;
               Data_arr.push(data)
             })
             : null;
+
+            if (this.state.isAdded==true) {
+              swal({
+                title: 'You are successfully added images',
+                icon: "success",
+                success: true,
+              })
+           }
           this.setState({
             attachment: Data_arr,
             uploadbuttonVisible: true,
@@ -267,10 +276,10 @@ export default class DraggableUploader extends React.Component {
               visible: true,
               formvisible: true,
               isLoading: false,
-                    },
-                    
+            },
+
           );
- 
+
         } catch (e) {
           alert(e);
           this.setState({ isLoading: false });
@@ -372,10 +381,10 @@ export default class DraggableUploader extends React.Component {
   }
   render() {
     console.log(this.state);
-    
+
     let { attachment, season, designer, category, city, userId, content } = this.state;
     var result = attachment.map(person => ({ src: `${config.imageBaseURL}` + person.attachment, srcSet: `${config.imageBaseURL}` + person.attachment, caption: `${"Designed By "}` + designer }));
-    console.log("result",result)
+    console.log("result", result)
     return (
 
       <div
@@ -444,7 +453,7 @@ export default class DraggableUploader extends React.Component {
                 onChange={this.handleChange1}
                 options={options1}
               />
-              {this.validator.message('category',  this.state.category,'required' )}
+              {this.validator.message('category', this.state.category, 'required')}
               <p>SEASONS</p>
               <Select
                 name="season"
@@ -452,7 +461,7 @@ export default class DraggableUploader extends React.Component {
                 onChange={this.handleChange2}
                 options={options2}
               />
-              {this.validator.message('season',  this.state.season, 'required' )}
+              {this.validator.message('season', this.state.season, 'required')}
 
               <p>CITIES</p>
               <Select
@@ -461,7 +470,7 @@ export default class DraggableUploader extends React.Component {
                 onChange={this.handleChange3}
                 options={options3}
               />
-              {this.validator.message('city', this.state.city,'required' ) }
+              {this.validator.message('city', this.state.city, 'required')}
 
               {
                 this.state.otherCityFieldActivate ?
@@ -475,7 +484,7 @@ export default class DraggableUploader extends React.Component {
                 <input type="text" class="form-control" name="designer" value={designer} id="usr" onChange={this.handleChange4} />
               </div>
               {this.validator.message('designer', designer, 'required')}
-              <button disabled={!this.state.formvisible || result.length<=0} onClick={this.Submit} type="button" class="btn btn-primary"> ADD Form</button>
+              <button disabled={!this.state.formvisible || result.length <= 0} onClick={this.Submit} type="button" class="btn btn-primary"> ADD Form</button>
             </form>
           </div>
         </div>
@@ -500,33 +509,33 @@ export default class DraggableUploader extends React.Component {
                 <ul className="files-preview ip-scrollbar col-12 row mx-0">
 
                   {attachment && attachment.map((file, idx) => {
-              
 
-                 return  <li className="file col-md-3" key={idx}>
+
+                    return <li className="file col-md-3" key={idx}>
                       <img className="" alt="card" onClick={this.handleClick} src={`${config.imageBaseURL}${file.attachment}`} />
-                      
-                        <button onClick={() => this.removeLoadedFile1(file.imageId)} type="button" class="close" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      
+
+                      <button onClick={() => this.removeLoadedFile1(file.imageId)} type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+
                     </li>
-               
-                  
-                    
+
+
+
                   })}
-      
+
                 </ul> : undefined}
-            
+
 
           </div>
 
           {
-              this.state.isAdded1 && this.state.attachment[0] ?  
-                <button className={this.state.isAdded1 ? this.state.isLoading2 ? "adding" : "added" : "add"} onClick={this.publish}><i className='far fa-save' />{this.state.isAdded2 ? this.state.isLoading2 ? "Publishing.." : "Published" : "Publish"}</button> :undefined
-            }
+            this.state.isAdded1 && this.state.attachment[0] ?
+              <button className={this.state.isAdded1 ? this.state.isLoading2 ? "adding" : "added" : "add"} onClick={this.publish}><i className='far fa-save' />{this.state.isAdded2 ? this.state.isLoading2 ? "Publishing.." : "Published" : "Publish"}</button> : undefined
+          }
 
         </div>
- 
+
       </div>
     );
   }

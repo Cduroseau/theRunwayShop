@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from '../config'
 import Skeleton from 'react-loading-skeleton';
 import {getdesignerimages} from '../api-gateway'
-
+import swal from 'sweetalert';
 class Designers extends React.Component {
     state = {
       Designers: [],
@@ -34,7 +34,20 @@ class Designers extends React.Component {
         const data = response.data
         this.setState({ Designers: data,isloading:false})
         console.log("datagjbgjgbppppp", this.state.Designers) 
-      })
+      }).catch(error => {
+        if (error){
+          swal({
+            title: 'Please login to proceed',
+            icon: "warning",
+              dangerMode:true
+          })
+            .then(willDelete => {
+              if (willDelete) {
+                this.props.history.push('/login')
+              }
+            });
+        }
+        })
     }
     render() {
         return (

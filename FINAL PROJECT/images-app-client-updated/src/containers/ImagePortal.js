@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios';
 import config from '../config'
 import Skeleton from 'react-loading-skeleton';
+import swal from 'sweetalert';
 class ImagePortal extends React.Component {
     state = {
         categories: [],
@@ -27,27 +28,16 @@ class ImagePortal extends React.Component {
                 console.log("datasfsfsf", data)
                 this.setState({ categories: data.data ,isloading:false})
                 console.log("data", this.state.categories)
-            })
-    }
-
-
-    // delete(uid) {
-    //     console.log("u clicked on delete");
+            }).catch(error => {
+                if (error){
+                  swal({
+                    title: 'Sorry there is an issue  please try again ',
+                    icon: "warning",
+                    dangerMode:true
+                  })  
+                }                                  })
         
-    //     var id=uid
-    //     axios({
-    //         method: 'DELETE',
-    //         url: config.apiUrl + '/images/delete/'+id,
-    //         headers: {
-    //             // 'Content-Type':  'application/json',
-    //             // "Authorization":  token
-    //         }
-    //     })
-    //         .then(response => {
-    //             console.log("responsedelete", response)
-    //         })
-    // }
-
+    }
 
 
     render() {

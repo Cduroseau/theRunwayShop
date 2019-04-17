@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from '../config'
 import Skeleton from 'react-loading-skeleton';
 import {getcitiesimages} from '../api-gateway'
-
+import swal from 'sweetalert';
 class Cities extends React.Component {
     state = {
         cities: [],
@@ -32,7 +32,21 @@ class Cities extends React.Component {
         const data = response.data
         this.setState({ cities: data,isloading:false})
         console.log("data", this.state.seasons) 
-      })
+      }).catch(error => {
+        if (error){
+          swal({
+            title: 'Please login to proceed',
+            icon: "warning",
+              dangerMode:true
+          })
+            .then(willDelete => {
+              if (willDelete) {
+                this.props.history.push('/login')
+              }
+            });
+
+        }
+        })
     
     }
     render() {

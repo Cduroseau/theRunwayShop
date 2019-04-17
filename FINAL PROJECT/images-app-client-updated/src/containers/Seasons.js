@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from '../config'
 import Skeleton from 'react-loading-skeleton';
 import {getseasonsimages} from '../api-gateway'
-
+import swal from 'sweetalert';
 class Seasons extends React.Component {
     state = {
         seasons: [],
@@ -30,8 +30,22 @@ class Seasons extends React.Component {
         const data = response.data
         this.setState({ seasons: data,isloading:false})
         console.log("data", this.state.seasons) 
-      })
-      console.log("body",body);
+      }).catch(error => {
+        if (error){
+          swal({
+            title: 'Please login to proceed',
+            icon: "warning",
+              dangerMode:true
+          })
+            .then(willDelete => {
+              if (willDelete) {
+                this.props.history.push('/login')
+              }
+            });
+
+        }
+        })
+
  
     }
     render() {

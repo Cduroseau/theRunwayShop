@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios';
 import config from '../config'
+import swal from 'sweetalert';
 import Skeleton from 'react-loading-skeleton';
 import {getcategoriesname} from '../api-gateway'
 class Category extends React.Component {
@@ -33,8 +34,23 @@ class Category extends React.Component {
         const data = response.data
         this.setState({ categories: data,isloading:false})
         console.log("data", this.state.seasons) 
-      })
-    }
+      }).catch(error => {
+        if (error){
+          swal({
+            title: 'Please login to proceed',
+            icon: "warning",
+              dangerMode:true
+          })
+            .then(willDelete => {
+              if (willDelete) {
+                this.props.history.push('/login')
+              }
+            });
+
+        }
+        })
+
+    } 
 
     render() {
       console.log("category ========>", this.state.categories)
