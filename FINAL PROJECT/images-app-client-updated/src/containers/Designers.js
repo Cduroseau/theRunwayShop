@@ -1,78 +1,142 @@
 import React from 'react'
 import axios from 'axios';
 import config from '../config'
-import Skeleton from 'react-loading-skeleton';
-import {getdesignerimages} from '../api-gateway'
 import swal from 'sweetalert';
+import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
+import Lightbox from "react-image-lightbox";
+var _ = require('lodash')
+
+
+
 class Designers extends React.Component {
-    state = {
-      Designers: [],
-      isloading:false,
- 
-   }
-    componentDidMount()
-     {
-      var urlParams = new URLSearchParams(window.location.search);
-      var category = urlParams.get('categoryid');
-      var season = urlParams.get('seasonid');
-      var city = urlParams.get('cityid');
-      var designer = urlParams.get('designerid');
-      this.getcategories(category,season,city,designer);
-    }
-   async  getcategories(category,season,city,designer) {
-    this.setState({isloading:true})
+  state = {
+    Designers: [],
+    isloading: false,
+    seasonsname: "",
+    categoryname: "",
+    citiesname: "",
+    Designersname: "",
+    photoIndex: 0,
+    isOpen: false,
+    images: [],
+  }
 
-      var body = { 
-        category,
-        season,
-        city,
-        designer
-       }
-      console.log("body in designer",body);
-      await getdesignerimages(body,(response)=>{
-        console.log("response designermjjjj",response) 
-        const data = response.data
-        this.setState({ Designers: data,isloading:false})
-        console.log("datagjbgjgbppppp", this.state.Designers) 
-      }).catch(error => {
-        if (error){
-          swal({
-            title: 'Please login to proceed',
-            icon: "warning",
-              dangerMode:true
-          })
-            .then(willDelete => {
-              if (willDelete) {
-                this.props.history.push('/login')
-              }
-            });
+
+
+  componentDidMount() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var category = urlParams.get('categoryid');
+    var season = urlParams.get('seasonid');
+    var city = urlParams.get('cityid');
+    var designer = urlParams.get('designerid');
+    this.setState({ citiesname: city, categoryname: category, seasonsname: season, Designersname: designer });
+    this.getcategories(category, season, city, designer)
+  }
+
+  getcategories(category, season, city, designer) {
+    this.setState({ isloading: true })
+    var body = {
+      category,
+      season,
+      city,
+      designer
+    }
+    console.log("body", body);
+    axios({
+      method: 'POST',
+      url: config.apiUrl + '/images/designer',
+      headers: {
+
+      },
+      data: JSON.stringify(body),
+    })
+      .then(response => {
+        if (response && response.data && response.data.data && Array.isArray(response.data.data) && response.data.data.length) {
+          this.setState({ Designers: _.filter(response.data.data, Object => { return Object.userId }), isloading: false })
         }
-        })
-    }
-    render() {
-        return (
-          !this.state.isloading?
-            <div>
-                <h1>Designer Images</h1>
-                {this.state.Designers && this.state.Designers.map((Designer, index) => (
-                    <div className="imagelayout" key={index} >
-                        <div className="imageCardWrapp">
+        var result = this.state.Designers.map(person => ({ src: `${config.imageBaseURL}` + person.attachment }));
+        var result1 = result.map(a => a.src);
+        console.log("result1", result1)
+        this.setState({ images: result1 })
+        console.log("this", this.state.images);
+      }).catch(error => {
+        if (error) {
+          swal({
+            title: 'sorry data not found',
+            icon: "warning",
+            dangerMode: true
+          })
+        }
+      })
+  }
 
-                        <img className="imageCard" alt="card" src={`${config.imageBaseURL}${Designer.attachment}`}  />
-                        </div>
+  renderImages = () => {
+    let photoIndex = -1;
+    const { images } = this.state;
 
-                        {/* <p>{Designer.designer}</p>  */}
-                        <div className="imagebox"  >
-                            <h2>INDIGITEL</h2>
-                            <p>Fashion</p>
-                        </div>
-                    </div>
-                ))}
-            </div>:<div style={{ fontSize: 20, lineHeight: 2 }}>
-        <h1>{this.props.title || <Skeleton />}</h1>
-        {this.props.body || <Skeleton count={100} />}
-      </div>);
-    }
+    return images.map(imageSrc => {
+      photoIndex++;
+      const privateKey = photoIndex;
+      return (
+        <MDBCol md="4" key={photoIndex}>
+          <figure>
+            <img src={imageSrc} alt="Gallery" className="img-fluid" onClick={() =>
+              this.setState({ photoIndex: privateKey, isOpen: true })
+            }
+            />
+          </figure>
+        </MDBCol>
+      );
+    })
+  }
+  render() {
+    const { photoIndex, isOpen, images } = this.state;
+    return (
+
+      !this.state.isloading ?
+        <div
+        >
+          <div className="text-left" onClick={() => this.props.history.push(`/Cities/?categoryid=${this.state.categoryname}&&seasonid=${this.state.seasonsname}&&cityid=${this.state.citiesname}`)}><button className="cate-but"><img src='../../img/back.png' /> {this.state.Designersname} </button></div>
+          <h1>Designer Images</h1>
+
+          <MDBContainer className="mt-5">
+            <div className="mdb-lightbox no-margin">
+              <MDBRow>
+                {this.renderImages()}
+              </MDBRow>
+            </div>
+            {isOpen && (
+              <Lightbox
+                mainSrc={images[photoIndex]}
+                nextSrc={images[(photoIndex + 1) % images.length]}
+                prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+                imageTitle={photoIndex + 1 + "/" + images.length}
+                onCloseRequest={() => this.setState({ isOpen: false })}
+                onMovePrevRequest={() =>
+                  this.setState({
+                    photoIndex: (photoIndex + images.length - 1) % images.length
+                  })
+                }
+                onMoveNextRequest={() =>
+                  this.setState({
+                    photoIndex: (photoIndex + 1) % images.length
+                  })
+                }
+              />
+            )}
+          </MDBContainer>
+
+        </div>
+
+        : <div >
+          <div>
+            <img src='../../img/preloader_ps_fast.gif' />
+          </div>
+        </div>);
+  }
 }
 export default Designers
 

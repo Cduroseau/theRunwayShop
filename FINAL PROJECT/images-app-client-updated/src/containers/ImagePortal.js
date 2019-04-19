@@ -1,18 +1,23 @@
 import React from 'react'
 import axios from 'axios';
 import config from '../config'
-import Skeleton from 'react-loading-skeleton';
 import swal from 'sweetalert';
+var _ = require('lodash')
 class ImagePortal extends React.Component {
     state = {
         categories: [],
-        isloading:false
+        isloading: false,
     }
     componentDidMount() {
+
+        var urlParams = new URLSearchParams(window.location.search);
+        console.log(urlParams.get('categoryid'))
+        var category = urlParams.get('categoryid');
+        console.log("id of category", category)
         this.getcategories();
     }
     getcategories() {
-        this.setState({isloading:true})
+        this.setState({ isloading: true })
         console.log("categories")
         axios({
             method: 'GET',
@@ -26,44 +31,46 @@ class ImagePortal extends React.Component {
                 console.log("response111", response)
                 const data = response.data
                 console.log("datasfsfsf", data)
-                this.setState({ categories: data.data ,isloading:false})
+                this.setState({ categories: data.data, isloading: false })
                 console.log("data", this.state.categories)
             }).catch(error => {
-                if (error){
-                  swal({
-                    title: 'Sorry there is an issue  please try again ',
-                    icon: "warning",
-                    dangerMode:true
-                  })  
-                }                                  })
-        
+                if (error) {
+                    swal({
+                        title: 'Seems like we couldn\'t fetch the data',
+                        icon: "warning",
+                        dangerMode: true
+                    })
+                }
+            })
     }
 
 
     render() {
-        console.log("categerories", );  
+        console.log("categerories");
         return (
-        !this.state.isloading?
-            <div>
-                <h1>Categories</h1>
-                {this.state.categories && this.state.categories.map((category, index) => (
-                    <div className="imagelayout"  key={index} onClick={()=>this.props.history.push(`/Category/?id=${category.category}`)}>
-                        <div className="imageCardWrapp">
-                            <img className="imageCard" alt="card" src={`${config.imageBaseURL}${category.attachment}`  }   />
-                            <p>{category.category}</p>
+            !this.state.isloading ?
+                <div>
+
+                    {this.state.categories && this.state.categories.map((category, index) => (
+                        <div className="imagelayout" key={index} onClick={() => this.props.history.push(`/Category/?categoryid=${category.category}`)}>
+                            <div className="imageCardWrapp">
+                                <img className="imageCard" alt="card" src={`${config.imageBaseURL}${category.attachment}`} />
+                                <p>{category.category}</p>
+                            </div>
+                            <div className="imagebox"  >
+                                <h2>INDIGITEL</h2>
+                                <p>The RunwayShop</p>
+                            </div>
                         </div>
-                        <div className="imagebox"  >
-                            {/* <h2 onClick={()=>this.delete(category.id)}>KIRAN</h2> */}
-                             <h2>INDIGITEL</h2> 
-                            <p>Fashion</p>
-                        </div>
-                    </div>
-                ))} 
-                 
-            </div>: <div style={{ fontSize: 20, lineHeight: 2 }}>
-        <h1>{this.props.title || <Skeleton />}</h1>
-        {this.props.body || <Skeleton count={100} />}
-      </div>);
+                    ))}
+
+                </div> :
+
+                <div>
+
+                    <img src='../../img/preloader_ps_fast.gif' />
+                </div>
+        );
     }
 }
 export default ImagePortal

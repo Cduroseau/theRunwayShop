@@ -1,11 +1,10 @@
-import { Link, withRouter } from "react-router-dom";
-import { Nav, Navbar, NavItem } from "react-bootstrap";
-import Routes from "./Routes";
-import { LinkContainer } from "react-router-bootstrap";
 import React, { Component, Fragment } from "react";
 import { Auth } from "aws-amplify";
+import { Link, withRouter } from "react-router-dom";
+import { Nav, Navbar, NavItem } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import Routes from "./Routes";
 import "./App.css";
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -49,17 +48,17 @@ class App extends Component {
     return (
       !this.state.isAuthenticating &&
       <div className="App container-fluid">
-        <Navbar /*fluid collapseOnSelect*/> 
+        <Navbar> 
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/">The RunwayShop</Link>
             </Navbar.Brand>
-            <Navbar.Toggle />
+            <Navbar.Toggle  aria-controls="responsive-navbar-nav" />
           </Navbar.Header>
           <Navbar.Collapse>
-            <Nav pullRight>
+            <Nav pullRight >
             <LinkContainer to="/ImagePortal">
-                <NavItem>Image Portal</NavItem>
+                <NavItem> Image Portal</NavItem>
               </LinkContainer>
               {this.state.isAuthenticated
                 ? 

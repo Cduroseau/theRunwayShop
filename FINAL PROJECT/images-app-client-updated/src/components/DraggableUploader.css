@@ -10,8 +10,6 @@
 }
 
 
-
-
 .sub-header {
     text-align: center;
     font-size: 18px;
@@ -34,33 +32,26 @@
 }
 
 #file-browser-input {
-    padding-left: 60px;
-    width: 210px;
-    height: 210px;
+    padding-left: 0;
+    width: calc(100% - 22px);
+    height: calc(100% - 30px);
     top: 0px;
-    left: 20px;
+    left:0;
     position: absolute;
     color: transparent;
     opacity: 0;
 }
 .files-preview-container {
-    display: flex;
     width: 100%;
-    height: fit-content;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    z-index: 99;
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex-shrink: 0;
-    padding: 5px;
+    padding: 5px;text-align: left;    height: 241px;
+    overflow-y: auto;
 }
 .file {
-    width: 5em;
-    height: 58px;
+    width: 65px;display:inline-flex;
+    height: 65px;
     /* background-color: rgba(101, 97, 97, 0.34); */
     position: relative;
-    margin-left: 8px;
+    margin-left:7px;
     border: 1px solid #fff;
     border-radius: 4px;
     box-shadow: 0px 0px 14px 3px rgba(15, 15, 15, 0.2);
@@ -68,7 +59,7 @@
 }
 
 .file img {
-    max-width: 100%;
+    height: 100%; width: 100%;
     
 }
 
@@ -328,4 +319,18 @@ ul.files-preview.ip-scrollbar{width: 100%;
   
   .inner-container.drag-and-drop .draggable-container {
       margin-bottom: 15px;
+  }
+  fieldset:disabled{
+    position: relative;
+  }
+  fieldset:disabled::before{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: red;
+    top:0px;
+    left: 0px;
+    content: "";
+    z-index: 999;
+    opacity: 0;
   }

@@ -49,7 +49,7 @@ const options3 = [
   { value: ' New York', label: ' New York' },
   { value: 'LA', label: 'LA' },
   { value: 'Miami', label: 'Miami' },
-  { value: 'Paris,', label: 'Paris' },
+  { value: 'Paris', label: 'Paris' },
   { value: 'Others', label: 'Others' },
 ];
 
@@ -110,9 +110,6 @@ export default class DraggableUploader extends React.Component {
       return { currentImage: state.currentImage++ };
     });
   };
-
-
-
 
   closeLightbox = () => {
     this.setState({ lightboxIsOpen: false });
@@ -198,9 +195,15 @@ export default class DraggableUploader extends React.Component {
         })
 
       }
-      ).catch(function (error) {
-        console.log(error);
-        alert(error)
+      ).catch(error => {
+        if (error) {
+          this.setState({ isLoading2: false, isAdded2: false })
+          swal({
+            title: 'sorry there is a problem ',
+            icon: "warning",
+            dangerMode: true
+          })
+        }
       })
   }
 
@@ -257,13 +260,13 @@ export default class DraggableUploader extends React.Component {
             })
             : null;
 
-            if (this.state.isAdded==true) {
-              swal({
-                title: 'You are successfully added images',
-                icon: "success",
-                success: true,
-              })
-           }
+          if (this.state.isAdded == true) {
+            swal({
+              title: 'You are successfully added images',
+              icon: "success",
+              success: true,
+            })
+          }
           this.setState({
             attachment: Data_arr,
             uploadbuttonVisible: true,
@@ -282,7 +285,6 @@ export default class DraggableUploader extends React.Component {
 
         } catch (e) {
           alert(e);
-          this.setState({ isLoading: false });
         }
       }
     })
@@ -381,7 +383,6 @@ export default class DraggableUploader extends React.Component {
   }
   render() {
     console.log(this.state);
-
     let { attachment, season, designer, category, city, userId, content } = this.state;
     var result = attachment.map(person => ({ src: `${config.imageBaseURL}` + person.attachment, srcSet: `${config.imageBaseURL}` + person.attachment, caption: `${"Designed By "}` + designer }));
     console.log("result", result)
@@ -446,45 +447,49 @@ export default class DraggableUploader extends React.Component {
 
           <div className="left">
             <form >
-              <p>CATEGERIES</p>
-              <Select
-                name="category"
-                value={category.value}
-                onChange={this.handleChange1}
-                options={options1}
-              />
-              {this.validator.message('category', this.state.category, 'required')}
-              <p>SEASONS</p>
-              <Select
-                name="season"
-                value={season.value}
-                onChange={this.handleChange2}
-                options={options2}
-              />
-              {this.validator.message('season', this.state.season, 'required')}
+              <fieldset disabled={!this.state.formvisible}>
+                <p>CATEGERIES</p>
+                <Select
+                  name="category"
+                  value={category.value}
+                  onChange={this.handleChange1}
+                  options={options1}
 
-              <p>CITIES</p>
-              <Select
-                name="city"
-                value={city.value}
-                onChange={this.handleChange3}
-                options={options3}
-              />
-              {this.validator.message('city', this.state.city, 'required')}
+                />
+                {this.validator.message('category', this.state.category, 'required')}
+                <p>SEASONS</p>
+                <Select
+                  name="season"
+                  value={season.value}
+                  onChange={this.handleChange2}
+                  options={options2}
+                />
+                {this.validator.message('season', this.state.season, 'required')}
 
-              {
-                this.state.otherCityFieldActivate ?
-                  <div className="input_active">
-                    <input type="text" name="firstname" onChange={(e) => { this.setState({ city: e.target.value }) }} placeholder="Please type other city" className="css-vj8t7z" />
-                  </div>
-                  : undefined
-              }
-              <div class="form-group">
-                <p>Designers</p>
-                <input type="text" class="form-control" name="designer" value={designer} id="usr" onChange={this.handleChange4} />
-              </div>
-              {this.validator.message('designer', designer, 'required')}
-              <button disabled={!this.state.formvisible || result.length <= 0} onClick={this.Submit} type="button" class="btn btn-primary"> ADD Form</button>
+                <p>CITIES</p>
+                <Select
+                  name="city"
+                  value={city.value}
+                  onChange={this.handleChange3}
+                  options={options3}
+                  disabled={true}
+                />
+                {this.validator.message('city', this.state.city, 'required')}
+
+                {
+                  this.state.otherCityFieldActivate ?
+                    <div className="input_active">
+                      <input type="text" disabled={!this.state.formvisible || result.length <= 0} name="firstname" onChange={(e) => { this.setState({ city: e.target.value }) }} placeholder="Please type other city" className="css-vj8t7z" />
+                    </div>
+                    : undefined
+                }
+                <div class="form-group">
+                  <p>Designers</p>
+                  <input type="text" class="form-control" name="designer" value={designer} id="usr" onChange={this.handleChange4} />
+                </div>
+                {this.validator.message('designer', designer, 'required')}
+                <button disabled={!this.state.formvisible || result.length <= 0} onClick={this.Submit} type="button" class="btn btn-primary"> ADD Form</button>
+              </fieldset >
             </form>
           </div>
         </div>
@@ -530,8 +535,8 @@ export default class DraggableUploader extends React.Component {
           </div>
 
           {
-            this.state.isAdded1 && this.state.attachment[0] ?
-              <button className={this.state.isAdded1 ? this.state.isLoading2 ? "adding" : "added" : "add"} onClick={this.publish}><i className='far fa-save' />{this.state.isAdded2 ? this.state.isLoading2 ? "Publishing.." : "Published" : "Publish"}</button> : undefined
+            this.state.isAdded1 && this.state.attachment[0] || this.error ?
+              <button disabled={this.state.isLoading} className={this.state.isAdded1 ? this.state.isLoading2 ? "adding" : "added" : "add"} onClick={this.publish}><i className='far fa-save' />{this.state.isAdded2 ? this.state.isLoading2 ? "Publishing.." : "Published" : "Publish"}</button> : undefined
           }
 
         </div>
