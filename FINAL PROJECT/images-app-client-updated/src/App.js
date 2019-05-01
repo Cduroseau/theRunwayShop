@@ -8,11 +8,11 @@ import "./App.css";
 class App extends Component {
   constructor(props) {
     super(props);
-  
+
     this.state = {
       isAuthenticated: false,
       isAuthenticating: true,
-    };
+    };  
   }
 
   async componentDidMount() {
@@ -20,14 +20,14 @@ class App extends Component {
       await Auth.currentSession();
       this.userHasAuthenticated(true);
     }
-    catch(e) {
+    catch (e) {
       if (e !== 'No current user') {
         alert(e);
       }
     }
     this.setState({ isAuthenticating: false });
   }
-  
+
   userHasAuthenticated = authenticated => {
     this.setState({ isAuthenticated: authenticated });
   }
@@ -35,8 +35,8 @@ class App extends Component {
   handleLogout = async event => {
     await Auth.signOut();
     this.userHasAuthenticated(false);
-    sessionStorage.removeItem("awsCredentials");
-    sessionStorage.clear();
+    localStorage.removeItem('awsCredentials');
+    localStorage.clear();
     this.props.history.push("/login");
   }
 
@@ -46,43 +46,46 @@ class App extends Component {
       userHasAuthenticated: this.userHasAuthenticated
     };
     return (
-      !this.state.isAuthenticating &&
-      <div className="App container-fluid">
-        <Navbar> 
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/">The RunwayShop</Link>
-            </Navbar.Brand>
-            <Navbar.Toggle  aria-controls="responsive-navbar-nav" />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight >
-            <LinkContainer to="/ImagePortal">
-                <NavItem> Image Portal</NavItem>
-              </LinkContainer>
-              {this.state.isAuthenticated
-                ? 
-                <Fragment>
-                  <LinkContainer to="/dashboard">
-                    <NavItem>Dashboard</NavItem>
-                  </LinkContainer>
-                  <NavItem onClick={this.handleLogout}>Logout</NavItem>
-                </Fragment>
-                : <Fragment>
-                    <LinkContainer to="/signup">
-                      <NavItem>Signup</NavItem>
-                    </LinkContainer>
-                    <LinkContainer to="/login">
-                      <NavItem>Login</NavItem>
-                    </LinkContainer>
-                  </Fragment>
-              }
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
+      // !this.state.isAuthenticating &&
+      // <div className="App container-fluid">
+      //   <Navbar>
+      //     <Navbar.Header>
+      //       <Navbar.Brand>
+      //         <Link to="/">The RunwayShop</Link>
+      //       </Navbar.Brand>
+      //       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      //     </Navbar.Header>
+      //     <Navbar.Collapse>
+      //       <Nav pullRight >
+      //         <LinkContainer to="/ImagePortal">
+      //           <NavItem> Image Portal</NavItem>
+      //         </LinkContainer>
+      //         {this.state.isAuthenticated
+      //           ?
+      //           <Fragment>
+      //             <LinkContainer to="/dashboard">
+      //               <NavItem>Dashboard</NavItem>
+      //             </LinkContainer>
+      //             <NavItem onClick={this.handleLogout}>Logout</NavItem>
+      //           </Fragment>
+      //           : <Fragment>
+      //             <LinkContainer to="/signup">
+      //               <NavItem>Signup</NavItem>
+      //             </LinkContainer>
+      //             <LinkContainer to="/login">
+      //               <NavItem>Login</NavItem>
+      //             </LinkContainer>
+      //           </Fragment>
+      //         }
+      //       </Nav>
+      //     </Navbar.Collapse>
+      //   </Navbar>
         <Routes childProps={childProps} />
-      </div>
+
     );
   }
 }
 export default withRouter(App);
+
+
+

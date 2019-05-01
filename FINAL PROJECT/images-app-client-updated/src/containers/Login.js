@@ -1,8 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Login.css";
 import { Auth } from "aws-amplify";
+import swal from 'sweetalert';
+import { Link} from "react-router-dom";
+import { Nav, Navbar, NavItem } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 export default class Login extends Component {
   constructor(props) {
@@ -11,7 +15,6 @@ export default class Login extends Component {
       isLoading: false,
       email: "",
       password: ""
-
     };
   }
 
@@ -30,33 +33,68 @@ export default class Login extends Component {
     this.setState({ isLoading: true });
     try {
       await Auth.signIn(this.state.email, this.state.password).then(res => {
-        console.log("res", res)
-        console.log('current credentials --- ')
-        // this.setState({username:res.username})
         localStorage.setItem("username", res.username)
         localStorage.setItem("imageID", res.userDataKey)
 
         Auth.currentUserCredentials()
-            .then(credentials => {
-              console.log('Current user credentials are --- ', credentials);
-              sessionStorage.setItem('awsCredentials', JSON.stringify(credentials.data));
-            }).catch(err => {
-              console.log('Error while signing in.')
-              console.log('error in signin --- ', err)
-            });
-
+          .then(credentials => {
+            localStorage.setItem('awsCredentials', JSON.stringify(credentials.data));
+          }).catch(err => {
+          });
       });
 
-      this.props.userHasAuthenticated(true);
-      this.props.history.push("/Dashboard");
+        swal({
+          title: 'You are successfully Logged in',
+          icon: "success",
+          success: true,
+        })
+          .then(willDelete => {
+            if (willDelete) {
+              this.props.userHasAuthenticated(true);
+              this.props.history.push("/Dashboard");
+            }
+          });
     } catch (e) {
-      alert(e.message);
       this.setState({ isLoading: false });
+      if (e) {
+        swal({
+          title: "Unable to login !",
+          icon: "warning",
+          dangerMode: true
+        })
+      }
     }
   }
 
   render() {
     return (
+      <div>
+          <div className="App container-fluid">
+        <Navbar>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Link to="/">The RunwayShop</Link>
+            </Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav pullRight >
+              <LinkContainer to="/ImagePortal">
+                <NavItem> Image Portal</NavItem>
+              </LinkContainer>
+              <Fragment>
+                  <LinkContainer to="/signup">
+                    <NavItem>Signup</NavItem>
+                  </LinkContainer>
+                  <LinkContainer to="/login">
+                    <NavItem>Login</NavItem>
+                  </LinkContainer>
+                </Fragment>
+          
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        </div>
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="email" bsSize="large">
@@ -86,6 +124,7 @@ export default class Login extends Component {
             loadingText="Logging in…"
           />
         </form>
+      </div>
       </div>
     );
   }

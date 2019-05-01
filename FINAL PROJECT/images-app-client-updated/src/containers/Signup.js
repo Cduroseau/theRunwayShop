@@ -7,6 +7,7 @@ import {
 } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { Auth } from "aws-amplify";
+import Navbarcomponent from "../components/Navbarcomponent"
 import "./Signup.css";
 
 export default class Signup extends Component {
@@ -147,10 +148,13 @@ export default class Signup extends Component {
 
   render() {
     return (
+      <div>
+      < Navbarcomponent/>,
       <div className="Signup">
         {this.state.newUser === null
           ? this.renderForm()
           : this.renderConfirmationForm()}
+      </div>
       </div>
     );
   }

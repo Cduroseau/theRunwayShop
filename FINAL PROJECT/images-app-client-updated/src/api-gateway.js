@@ -11,9 +11,7 @@ export const invokeAPIGateway = async ({
   body,
 }) => {
 
-
-let data=JSON.parse(sessionStorage.getItem("awsCredentials"));
-
+  let data = JSON.parse(localStorage.getItem("awsCredentials"));
   const client = sigV4Client.newClient({
     accessKey: data.Credentials.AccessKeyId,
     secretKey:data.Credentials.SecretKey,
@@ -45,5 +43,11 @@ let data=JSON.parse(sessionStorage.getItem("awsCredentials"));
     }
   }
 };
-
-
+export const postimages = async (identityId,callback) => {
+  const result = await invokeAPIGateway({
+    path: `/images`,
+    method: 'POST', 
+    body:JSON.stringify(identityId),
+  });
+ callback(result)
+};

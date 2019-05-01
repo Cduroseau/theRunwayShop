@@ -12,6 +12,7 @@ import Cities from './containers/Cities'
 import Designers from './containers/Designers'
 import getallimages from './containers/getallimages'
 import Category from './containers/Category'
+
 export default ({ childProps }) =>
     <Switch>
         <AppliedRoute path="/" exact component={Home} props={childProps} />
