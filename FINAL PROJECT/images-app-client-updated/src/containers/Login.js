@@ -39,6 +39,7 @@ export default class Login extends Component {
         Auth.currentUserCredentials()
           .then(credentials => {
             localStorage.setItem('awsCredentials', JSON.stringify(credentials.data));
+            console.log("credentials in localstorege", credentials.data);
           }).catch(err => {
           });
       });

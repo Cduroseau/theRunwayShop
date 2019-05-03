@@ -5,13 +5,19 @@ import config from "../config";
 import "./Dashboard.css";
 import { API } from "aws-amplify";
 import { s3Upload } from "../libs/awsLib";
+import swal from 'sweetalert';
 import DraggableUploader from "../components/DraggableUploader"
 export default class Dashboard extends Component {
   constructor(props) {
     super(props);
  
   }
-
+componentWillMount() {
+      let awsCredentialsValid = JSON.parse(localStorage.getItem("awsCredentials"));
+     if (awsCredentialsValid==null) {
+       this.props.history.push("/login");
+      }
+}
   render() {
     return (
       <div>

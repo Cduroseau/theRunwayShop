@@ -11,10 +11,13 @@ class ImagePortal extends React.Component {
         error: false
     }
     componentDidMount() {
+    /*..urlParams TO handle Ids..*/
         var urlParams = new URLSearchParams(window.location.search);
         var category = urlParams.get('categoryid');
         this.getcategories();
     }
+
+/*...getcategories Api Call ...*/
     getcategories() {
         this.setState({ isloading: true })
         axios({
@@ -29,11 +32,6 @@ class ImagePortal extends React.Component {
             }).catch(error => {
                 if (error) {
                     this.setState({ isloading: false, error: true })
-                    swal({
-                        title: "sorry ! something went wrong",
-                        icon: "warning",
-                        dangerMode: true
-                    })
                 }
             })
     }
@@ -57,12 +55,11 @@ class ImagePortal extends React.Component {
                                     </div>
                                 </div>
                             ))
-                            : <div>   <img src='../../img/errors.png' />
-                                <h2>Sorry there is a  problem  occured...</h2></div>}
+                                    : <div>   <img src='../../img/404-Air.gif' />
+                                        <h1>Something Went wrong on our End  or Make sure your internet conection is Active</h1></div>}
                 </div> :
                 <div>
                     <img src='../../img/preloader_ps_fast.gif' />
-                    <h2>Loading...</h2>
                 </div>
                  }
             </div>

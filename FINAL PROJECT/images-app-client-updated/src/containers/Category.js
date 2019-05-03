@@ -37,11 +37,6 @@ class Category extends React.Component {
     }).catch(error => {
       if (error) {
         this.setState({ isloading: false, error: true })
-        swal({
-          title: "sorry ! something went wrong",
-          icon: "warning",
-          dangerMode: true
-        })
       }
     })
   }
@@ -71,13 +66,13 @@ class Category extends React.Component {
                     ))
                     :
                     <div><img src='../../img/data-not-found.gif' /><h3>Data not Found !</h3> </div> : <div>
-                    <img src='../../img/Error-404.gif' />
+                    <img src='../../img/404-Air.gif' />
+                    <h1>Something Went wrong on our End  or Make sure your internet conection is Active</h1>
                   </div>
               }
             </div> : <div>
               <div>
                 <img src='../../img/preloader_ps_fast.gif' />
-                <h2>Loading...</h2>
               </div>
             </div>
         }

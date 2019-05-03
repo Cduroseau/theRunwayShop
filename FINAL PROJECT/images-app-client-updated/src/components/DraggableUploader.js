@@ -7,13 +7,9 @@ import config from "../config";
 import { Icon } from "react-icons-kit";
 import { remove } from 'react-icons-kit/fa/remove';
 import "./DraggableUploader.css"
-import { FormControl, FormGroup, ControlLabel, DropdownButton, MenuItem } from "react-bootstrap";
-import LoaderButton from "../components/LoaderButton";
 import Select from 'react-select';
-import axios from 'axios';
 import swal from 'sweetalert';
 import SimpleReactValidator from 'simple-react-validator';
-import Modal from 'react-awesome-modal';
 import Lightbox from "react-images";
 import { postimages } from '../api-gateway'
 import Navbarcomponent from "./Navbarcomponent"
@@ -25,8 +21,8 @@ const photos = [
   }
 ];
 
-
-const options1 = [
+/*...CategoriesList...*/
+const CategoriesList = [
   { value: 'Menswear', label: 'Menswear' },
   { value: 'Womenswear', label: 'Womenswear' },
   { value: 'Streetwear', label: 'Streetwear' },
@@ -35,7 +31,8 @@ const options1 = [
   { value: 'Emerging Designers', label: 'Emerging Designers' }
 ];
 
-const options2 = [
+/*...SeasonsList...*/
+const SeasonsList = [
   { value: 'AW20', label: 'AW20' },
   { value: 'SS20', label: 'SS20' },
   { value: 'AW19', label: 'AW19' },
@@ -47,14 +44,14 @@ const options2 = [
   { value: 'SS17', label: 'SS17' }
 ];
 
-const options3 = [
+/*...CitiesList...*/
+const CitiesList = [
   { value: 'New York', label: 'New York' },
   { value: 'LA', label: 'LA' },
   { value: 'Miami', label: 'Miami' },
   { value: 'Paris', label: 'Paris' },
   { value: 'Others', label: 'Others' },
 ];
-
 export default class DraggableUploader extends React.Component {
   constructor(props) {
     super(props);
@@ -86,16 +83,22 @@ export default class DraggableUploader extends React.Component {
       isLoading2: false,
       formvisible: false,
       isButtonvisible: false,
+      isInputvalid: false
     }
   }
 
+
+  /*...handleClick to open light box model...*/
   handleClick = () => {
     this.setState({ lightboxIsOpen: true });
   };
 
+
   componentWillMount() {
     this.validator = new SimpleReactValidator();
   }
+
+  /*..light  box  previous images...*/
   gotoPrevLightboxImage = () => {
     this.setState((state, props) => {
       if (state.currentImage <= photos.length--) {
@@ -105,6 +108,9 @@ export default class DraggableUploader extends React.Component {
     });
   };
 
+
+
+  /*... light box  Next  images...*/
   gotoNextLightboxImage = () => {
     this.setState((state, props) => {
       if (state.currentImage >= 0) {
@@ -113,7 +119,7 @@ export default class DraggableUploader extends React.Component {
       return { currentImage: state.currentImage++ };
     });
   };
-
+  /*...  Close light box  Next ...*/
   closeLightbox = () => {
     this.setState({ lightboxIsOpen: false });
   };
@@ -121,87 +127,118 @@ export default class DraggableUploader extends React.Component {
     this.validator = new SimpleReactValidator();
   }
 
-  handleChange1 = (category) => {
+
+  /*...  handleChangeCategoriesList  ...*/
+  handleChangeCategoriesList = (category) => {
     this.setState({ category: category.value });
   }
-  handleChange2 = (season) => {
+
+  /*...  handleChangeSeasonsList  ...*/
+  handleChangeSeasonsList = (season) => {
     this.setState({ season: season.value });
   }
-  handleChange3 = (city) => {
-    if (city.value == "Others") {
-      this.setState({ otherCityFieldActivate: true });
-    }
-    else {
-      this.setState({ otherCityFieldActivate: false });
-      this.setState({ city: city.value });
+
+  /*...  handleChangeCitiesList  ...*/
+  handleChangeCitiesList = (city) => {
+    this.setState({ city: city.value });
+  }
+
+  /*...  handleDesigner  ...*/
+  handleDesigner = (e) => {
+    this.setState({ designer: e.target.value })
+    var checkstring = e.target.value
+    if (checkstring != "") {
+      if (/[^A-Za-z0-9]/g.test(checkstring)) {
+        this.setState({
+          designer: checkstring, isInputvalid: true
+        });
+      } else {
+        this.setState({
+          designer: checkstring, isInputvalid: false
+        });
+      }
     }
   }
 
+  /*...  remove Preview  Images  ...*/
   removeLoadedFile1(file) {
     var attachment = this.state.attachment;
     attachment.splice(file, 1);
     this.setState({ attachment })
   }
 
-  publish = (e) => {
+  /*...  publish  Images  ...*/
+  async  publish(e) {
     e.preventDefault()
-    this.setState({ isAdded2: true, isLoading2: true });
-    this.state.content = Math.random().toString();
-    let { attachment, season, designer, category, city, userId, content } = this.state;
-    var body = {
-      attachment: attachment,
-      season: season,
-      designer: designer,
-      category: category,
-      city: city,
-      userId: userId,
-      content: content
-    }
-    this.setState({ show: true })
-    postimages(body, (response) => {
-      if (response.status == 0) {
-        this.setState({ isLoading2: false, isAdded2: false })
-        swal({
-          title: "Designer " + `${this.state.designer}` + "    already exits! ",
-          text: "PLEASE ENTER ANOTHER NAME!",
-          icon: "warning",
-          dangerMode: true
-        })
-      }
-      if (response.status == 1) {
-        swal({
-          title: 'You are successfully Published',
-          icon: "success",
-          success: true,
-        })
-          .then(willDelete => {
-            if (willDelete) {
-              this.props.history.push('/ImagePortal')
-            }
-          });
-      }
-      this.setState({
-        uploadbuttonVisible: true,
-        isLoading2: false,
-        visible: false,
-        isAdded2: false,
+    let awsCredentialsValid = JSON.parse(localStorage.getItem("awsCredentials"));
+    if (awsCredentialsValid == null) {
+      swal({
+        title: "Session Expired Please login !",
+        icon: "warning",
+        dangerMode: true
       })
-    }).catch(error => {
-      this.setState({ isLoading2: false, isAdded2: false, })
-      if (error) {
-        swal({
-          title: "Session Expired  Please  Login!",
-          icon: "warning",
-          dangerMode: true
-        })
-          .then(willDelete => {
-            if (willDelete) {
-           this.props.history.push("/login");
-            }
-          });
+        .then(willDelete => {
+          if (willDelete) {
+            this.props.history.push("/login");
+          }
+        });
+    }
+    else {
+      this.setState({ isAdded2: true, isLoading2: true });
+      this.state.content = Math.random().toString();
+      let { attachment, season, designer, category, city, userId, content } = this.state;
+      var body = {
+        attachment: attachment,
+        season: season,
+        designer: designer,
+        category: category,
+        city: city,
+        userId: userId,
+        content: content
       }
-    })
+      this.setState({ show: true })
+      await postimages(body, (response) => {
+        if (response.status == 0) {
+          this.setState({ isLoading2: false, isAdded2: false })
+          swal({
+            title: "Designer " + `${this.state.designer}` + "    already exits! ",
+            text: "PLEASE ENTER ANOTHER NAME!",
+            icon: "warning",
+            dangerMode: true
+          })
+        }
+        if (response.status == 1) {
+          swal({
+            title: 'You are successfully Published',
+            icon: "success",
+            success: true,
+          })
+            .then(willDelete => {
+              if (willDelete) {
+                this.props.history.push('/ImagePortal')
+              }
+            });
+        }
+        this.setState({
+          uploadbuttonVisible: true,
+          isLoading2: false,
+          visible: false,
+          isAdded2: false,
+        })
+      })
+        .catch(error => {
+          this.setState({ isLoading2: false, isAdded2: false, })
+          if (error) {
+            swal({
+              title: "something went wrong on our End or Make sure your Internet connection is Active!",
+              icon: "warning",
+              dangerMode: true
+            })
+          }
+        })
+    }
   }
+  /*... To handle formData  ...*/
   Submit = (e) => {
     e.preventDefault()
     if (this.validator.allValid()) {
@@ -232,6 +269,8 @@ export default class DraggableUploader extends React.Component {
       this.forceUpdate();
     }
   }
+
+  /*... Creates Unique Random ImageId ...*/
   makeid(length) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -240,60 +279,70 @@ export default class DraggableUploader extends React.Component {
     return text;
   }
 
+  /*...Images upload to Aws...*/
   handleSubmit = async event => {
     event.preventDefault();
-    this.setState({ isAdded: true, isLoading: true });
-    let valid = true;
-    var Data_arr = [];
-    this.state.loadedFiles.map(async (item, key) => {
-      var data = {};
-      try {
-        const attachment = item
-          ? await s3Upload(item.file).then((item) => {
-            data.imageId = this.makeid(10);
-            data.attachment = item;
-            Data_arr.push(data)
-          })
-          : null;
-
-        if (this.state.isAdded == true) {
-          swal({
-            title: 'You are successfully added images',
-            icon: "success",
-            success: true,
-          })
-        }
-        this.setState({
-          attachment: Data_arr,
-          uploadbuttonVisible: true,
-          isLoading: false,
-        })
-
-        this.setState(
-          {
-            isAdded: false,
-            visible: true,
-            formvisible: true,
+    let awsCredentialsValid = JSON.parse(localStorage.getItem("awsCredentials"));
+    if (awsCredentialsValid == null) {
+      swal({
+        title: "Session Expired Please login !",
+        icon: "warning",
+        dangerMode: true
+      })
+        .then(willDelete => {
+          if (willDelete) {
+            this.props.history.push("/login");
+          }
+        });
+    }
+    else {
+      this.setState({ isAdded: true, isLoading: true });
+      let valid = true;
+      var Data_arr = [];
+      this.state.loadedFiles.map(async (item, key) => {
+        var data = {};
+        try {
+          const attachment = item
+            ? await s3Upload(item.file).then((item) => {
+              data.imageId = this.makeid(10);
+              data.attachment = item;
+              Data_arr.push(data)
+            })
+            : null;
+          if (this.state.isAdded == true) {
+            swal({
+              title: 'You are successfully added images',
+              icon: "success",
+              success: true,
+            })
+          }
+          this.setState({
+            attachment: Data_arr,
+            uploadbuttonVisible: true,
             isLoading: false,
-          },
-
-        );
-      } catch (e) {
-        this.setState({ isLoading: false, isAdded: false })
-        if (e) {
-          swal({
-            title: "Session Expired  Please  Login!",
-            icon: "warning",
-            dangerMode: true
           })
-            .then(willDelete => {
-              if (willDelete) {
-                this.props.history.push('/login')
-              }
-            });
+
+          this.setState(
+            {
+              isAdded: false,
+              visible: true,
+              formvisible: true,
+              isLoading: false,
+            },
+
+          );
+        } catch (e) {
+          this.setState({ isLoading: false, isAdded: false })
+          if (e) {
+            swal({
+              title: "something went wrong on our End or Make sure your Internet connection is Active!",
+              icon: "warning",
+              dangerMode: true
+            })
+          }
         }
-      }
-    })
+      })
+    }
   }
   createImage(image) {
     return API.post("images", "/images", {
@@ -301,6 +350,7 @@ export default class DraggableUploader extends React.Component {
     })
   }
 
+  /*...Images  Loaded...*/
   onFileLoad(e) {
     const initFile = e.currentTarget.files;
     Object.keys(initFile).map((key) => {
@@ -312,16 +362,13 @@ export default class DraggableUploader extends React.Component {
           data: fileReader.result,
           isUploading: false
         }
-
         this.addLoadedFile(fileData);
       }
-
       this.setState({ isButtonvisible: true })
 
       fileReader.onabort = () => {
         alert("Reading Aborted");
       }
-
       fileReader.onerror = () => {
         alert("Reading ERROR!");
       }
@@ -331,7 +378,7 @@ export default class DraggableUploader extends React.Component {
     })
 
   }
-
+  /*...Maintain  Loaded files to state..*/
   addLoadedFile(file) {
     let tempPhotos = this.state.loadedFiles;
     var data = []
@@ -341,6 +388,9 @@ export default class DraggableUploader extends React.Component {
     })
 
   }
+
+
+  /*...To Remove images in  Dropdown..*/
   removeLoadedFile(file) {
     this.setState((prevState) => {
       let loadedFiles = prevState.loadedFiles;
@@ -351,10 +401,12 @@ export default class DraggableUploader extends React.Component {
     });
   }
 
+  /*...To Remove All Images..*/
   removeAllLoadedFile() {
     this.setState({ loadedFiles: [] });
   }
 
+  /*...To updateLoadedFile ..*/
   updateLoadedFile(oldFile, newFile) {
     this.setState((prevState) => {
 
@@ -371,6 +423,7 @@ export default class DraggableUploader extends React.Component {
     return newFile;
   }
 
+  /*...onUpload function ..*/
   onUpload() {
     const { loadedFiles } = this.state;
     loadedFiles.map((file, idx) => {
@@ -390,13 +443,11 @@ export default class DraggableUploader extends React.Component {
   render() {
     let { attachment, season, designer, category, city, userId, content, loadedFiles } = this.state;
     var result = attachment.map(person => ({ src: `${config.imageBaseURL}` + person.attachment, srcSet: `${config.imageBaseURL}` + person.attachment, caption: `${"Designed By "}` + designer }));
-
     return (
-
-   <div>
+      <div>
         <Navbarcomponent />
-     { 
-        <div
+        {
+          <div
             className="inner-container drag-and-drop"
             style={{
               display: "flex",
@@ -456,42 +507,39 @@ export default class DraggableUploader extends React.Component {
                     <Select
                       name="category"
                       value={category.value}
-                      onChange={this.handleChange1}
-                      options={options1}
+                      onChange={this.handleChangeCategoriesList}
+                      options={CategoriesList}
                     />
-                    <p className="text-danger">{this.validator.message('category', this.state.category, 'required')}</p>
+                    <p className="text-danger font-weight-bold">{this.validator.message('category', this.state.category, 'required')}</p>
                     <p>SEASONS</p>
                     <Select
                       name="season"
                       value={season.value}
-                      onChange={this.handleChange2}
-                      options={options2}
+                      onChange={this.handleChangeSeasonsList}
+                      options={SeasonsList}
                     />
-                    <p className="text-danger">{this.validator.message('season', this.state.season, 'required')}</p>
+                    <p className="text-danger font-weight-bold">{this.validator.message('season', this.state.season, 'required')}</p>
                     <p>CITIES</p>
                     <Select
                       name="city"
                       value={city.value}
-                      onChange={this.handleChange3}
-                      options={options3}
+                      onChange={this.handleChangeCitiesList}
+                      options={CitiesList}
                       disabled={true}
                     />
 
-                    <p className="text-danger">{this.validator.message('city', this.state.city, 'required')}</p>
-                    {
-                      this.state.otherCityFieldActivate ?
-                        <div className="input_active">
-                          <input type="text" disabled={!this.state.formvisible || result.length <= 0} name="firstname" onChange={(e) => { this.setState({ city: e.target.value }) }} placeholder="Please type other city" className="css-vj8t7z" />
-                        </div>
-                        : undefined
-                    }
+                    <p className="text-danger font-weight-bold">{this.validator.message('city', this.state.city, 'required')}</p>
                     <div className="form-group input_active ">
                       <p>Designers</p>
-                      <input type="Big Ted"  maxlength="25"  className="form-control2 " placeholder="Enter Designer Name" name="designer" value={designer} id="usr" onChange={(e) => { this.setState({ designer: e.target.value }) }} />
+                      <input type="Big Ted" className="form-control2 " placeholder="Enter Designer Name" name="designer" value={designer} id="usr" onChange={this.handleDesigner} />
                     </div>
+                    {
+                      this.state.isInputvalid ?
 
-                    <p className="text-danger"> {this.validator.message('designer', designer, 'required')}</p>
-                    <button disabled={!this.state.formvisible || result.length <= 0} onClick={this.Submit} type="button" className="btn btn-primary"> ADD Form</button>
+                        <p className="text-danger font-weight-bold" >Please Enter only alphanumeric characters</p> : null
+                    }
+                    <p className="text-danger font-weight-bold"> {this.validator.message('designer', designer, 'required')}</p>
+                    <button disabled={!this.state.formvisible || result.length <= 0 || this.state.isInputvalid} onClick={this.Submit} type="button" className="btn btn-primary"> ADD Form</button>
                   </fieldset >
                 </form>
               </div>
@@ -515,7 +563,7 @@ export default class DraggableUploader extends React.Component {
                       {attachment && attachment.map((file, idx) => {
                         return <li className="file col-md-3" key={idx}>
                           <img className="" alt="card" onClick={this.handleClick} src={`${config.imageBaseURL}${file.attachment}`} />
-                          <button onClick={() => this.removeLoadedFile1(idx)} type="button" class="close" aria-label="Close">
+                          <button onClick={() => this.removeLoadedFile1(idx)} type="button" className="close" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </li>
@@ -524,12 +572,12 @@ export default class DraggableUploader extends React.Component {
               </div>
               {
                 this.state.isAdded1 && this.state.attachment[0] || this.error ?
-                  <button disabled={this.state.isLoading} className={this.state.isAdded1 ? this.state.isLoading2 ? "adding" : "added" : "add"} onClick={this.publish}><i className='far fa-save' />{this.state.isAdded2 ? this.state.isLoading2 ? "Publishing.." : "Published" : "Publish"}</button> : undefined
+                  <button disabled={this.state.isLoading} className={this.state.isAdded1 ? this.state.isLoading2 ? "adding" : "added" : "add"} onClick={this.publish.bind(this)}><i className='far fa-save' />{this.state.isAdded2 ? this.state.isLoading2 ? "Publishing.." : "Published" : "Publish"}</button> : undefined
               }
             </div>
           </div>
-     }
-   </div>
+        }
+      </div>
 
     );
   }

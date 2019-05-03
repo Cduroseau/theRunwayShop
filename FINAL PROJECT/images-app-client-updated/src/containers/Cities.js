@@ -18,9 +18,10 @@ class Cities extends React.Component {
     var season = urlParams.get('seasonid');
     var city = urlParams.get('cityid');
     this.setState({ citiesname: city, categoryname: category, seasonsname: season });
-    this.getcategories(category, season, city);
+    this.getCities(category, season, city);
   }
-  getcategories(category, season, city) {
+/*...getCities Api Call ...*/
+  getCities(category, season, city) {
     this.setState({ isloading: true })
     var body = {
       category,
@@ -29,11 +30,10 @@ class Cities extends React.Component {
     }
     axios({
       method: 'POST',
-      url: config.apiUrl + '/images/city ',
+      url: config.apiUrl + '/images/city',
 
       headers: {
-        // 'Content-Type':  'application/json',
-        // "Authorization":  token
+
       },
       data: JSON.stringify(body),
     })
@@ -43,11 +43,7 @@ class Cities extends React.Component {
         }
       }).catch(error => {
         if (error) {
-          swal({
-            title: "sorry ! something went wrong",
-            icon: "warning",
-            dangerMode: true
-          })
+          this.setState({ isloading: false, error: true })
         }
       })
   }
@@ -77,12 +73,12 @@ class Cities extends React.Component {
                 ))
                 :
                 <div><img src='../../img/data-not-found.gif' /><h3>Data not Found !</h3> </div> : <div>
-                <img src='../../img/Error-404.gif' /></div>
+                    <img src='../../img/404-Air.gif' />
+                    <h1>Something Went wrong on our End  or Make sure your internet conection is Active</h1></div>
           }
         </div> : <div >
           <div>
             <img src='../../img/preloader_ps_fast.gif' />
-            <h2>Loading...</h2>
           </div>
         </div>
         }

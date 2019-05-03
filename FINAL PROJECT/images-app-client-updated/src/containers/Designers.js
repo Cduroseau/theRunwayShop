@@ -22,7 +22,6 @@ class Designers extends React.Component {
     images: [],
     error: false
   }
-
   componentDidMount() {
     var urlParams = new URLSearchParams(window.location.search);
     var category = urlParams.get('categoryid');
@@ -30,10 +29,10 @@ class Designers extends React.Component {
     var city = urlParams.get('cityid');
     var designer = urlParams.get('designerid');
     this.setState({ citiesname: city, categoryname: category, seasonsname: season, Designersname: designer });
-    this.getcategories(category, season, city, designer)
+    this.getDesigners(category, season, city, designer)
   }
 
-  getcategories(category, season, city, designer) {
+  getDesigners(category, season, city, designer) {
     this.setState({ isloading: true })
     var body = {
       category,
@@ -62,11 +61,6 @@ class Designers extends React.Component {
       }).catch(error => {
         if (error) {
           this.setState({ isloading: false, error: true })
-          swal({
-            title: "sorry ! something went wrong",
-            icon: "warning",
-            dangerMode: true
-          })
         }
       })
   }
@@ -131,13 +125,13 @@ class Designers extends React.Component {
                     />
                   )}
                 </MDBContainer> : <div><img src='../../img/data-not-found.gif' /><h3>Data not Found !</h3> </div> : <div>
-                <img src='../../img/Error-404.gif' /></div>
+                    <img src='../../img/404-Air.gif' />
+                    <h1>Something Went wrong on our End  or Make sure your internet conection is Active</h1></div>
           }
         </div>
         :
         <div>
           <img src='../../img/preloader_ps_fast.gif' />
-          <h2>Loading...</h2>
         </div>
         }
       </div>

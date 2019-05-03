@@ -26,6 +26,7 @@ class App extends Component {
       }
     }
     this.setState({ isAuthenticating: false });
+
   }
 
   userHasAuthenticated = authenticated => {

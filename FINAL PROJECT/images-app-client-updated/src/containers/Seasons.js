@@ -21,6 +21,8 @@ class Seasons extends React.Component {
     this.setState({ categoryname: category, seasonsname: season, citiesname: city });
     this.getseasons(category, season);
   }
+
+  /*...getseasons Api Call ...*/
   getseasons(category, season) {
     this.setState({ isloading: true })
     var body = {
@@ -32,8 +34,6 @@ class Seasons extends React.Component {
       url: config.apiUrl + '/images/season',
 
       headers: {
-        // 'Content-Type':  'application/json',
-        // "Authorization":  token
       },
       data: JSON.stringify(body),
     })
@@ -43,11 +43,7 @@ class Seasons extends React.Component {
         }
       }).catch(error => {
         if (error) {
-          swal({
-            title: "sorry ! something went wrong",
-            icon: "warning",
-            dangerMode: true
-          })
+          this.setState({ isloading: false, error: true })
         }
       })
   }
@@ -55,39 +51,39 @@ class Seasons extends React.Component {
     var data = this.state.seasons
     return (
       <div>
-        <Navbarcomponent/>
+        <Navbarcomponent />
         {
-!this.state.isloading ?
-<div>
-<div className="text-left" onClick={() => this.props.history.push(`/Category/?categoryid=${this.state.categoryname}&&seasonid=${this.state.seasonsname}&&cityid=${this.state.citiesname}`)}><button className="cate-but"><img src='../../img/back.png' /> {this.state.seasonsname} </button></div>
-{
- !this.state.error ?
-   data && Array.isArray(data) && data.length ?
-     data.map((category, index) => (
-       <div className="imagelayout" key={index} onClick={() => this.props.history.push(`/Cities/?categoryid=${category.category}&&seasonid=${category.season}&&cityid=${category.city}`)}>
-         <div className="imageCardWrapp">
-           <img className="imageCard" alt="card" src={`${config.imageBaseURL}${category.attachment}`} />
-           <p>{category.city}</p>
-         </div>
-         <div className="imagebox"  >
-           <p>The RunwayShop</p>
-         </div>
-       </div>
+          !this.state.isloading ?
+            <div>
+              <div className="text-left" onClick={() => this.props.history.push(`/Category/?categoryid=${this.state.categoryname}&&seasonid=${this.state.seasonsname}&&cityid=${this.state.citiesname}`)}><button className="cate-but"><img src='../../img/back.png' /> {this.state.seasonsname} </button></div>
+              {
+                !this.state.error ?
+                  data && Array.isArray(data) && data.length ?
+                    data.map((category, index) => (
+                      <div className="imagelayout" key={index} onClick={() => this.props.history.push(`/Cities/?categoryid=${category.category}&&seasonid=${category.season}&&cityid=${category.city}`)}>
+                        <div className="imageCardWrapp">
+                          <img className="imageCard" alt="card" src={`${config.imageBaseURL}${category.attachment}`} />
+                          <p>{category.city}</p>
+                        </div>
+                        <div className="imagebox"  >
+                          <p>The RunwayShop</p>
+                        </div>
+                      </div>
 
-     ))
-     :
-     <div><img src='../../img/data-not-found.gif' /><h3>Data not Found !</h3> </div> : <div>
-     <img src='../../img/Error-404.gif' /></div>
-}
-</div> : <div >
-<div>
- <img src='../../img/preloader_ps_fast.gif' />
- <h2>Loading...</h2>
-</div>
-</div>
-  }
+                    ))
+                    :
+                    <div><img src='../../img/data-not-found.gif' /><h3>Data not Found !</h3> </div> : <div>
+                    <img src='../../img/404-Air.gif' />
+                    <h1>Something Went wrong on our End  or Make sure your internet conection is Active</h1></div>
+              }
+            </div> : <div >
+              <div>
+                <img src='../../img/preloader_ps_fast.gif' />
+              </div>
+            </div>
+        }
       </div>
-        )
+    )
   }
 }
 export default Seasons
