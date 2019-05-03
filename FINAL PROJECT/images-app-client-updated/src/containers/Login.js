@@ -35,11 +35,9 @@ export default class Login extends Component {
       await Auth.signIn(this.state.email, this.state.password).then(res => {
         localStorage.setItem("username", res.username)
         localStorage.setItem("imageID", res.userDataKey)
-
         Auth.currentUserCredentials()
           .then(credentials => {
             localStorage.setItem('awsCredentials', JSON.stringify(credentials.data));
-            console.log("credentials in localstorege", credentials.data);
           }).catch(err => {
           });
       });

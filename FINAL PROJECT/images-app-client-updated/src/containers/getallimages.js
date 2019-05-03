@@ -13,11 +13,9 @@
 //     }
 //    async  getcategories() {
 //         this.setState({isloading:true})
-//         console.log("categories")
 
 
 //         await getallimagesname((response)=>{
-//             console.log("response",response) 
 //             const data = response.data
 //             this.setState({ getallimages: data,isloading:false})
 //           })
